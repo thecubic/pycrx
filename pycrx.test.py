@@ -17,7 +17,7 @@ except ImportError:
 
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA
-#from Crypto.Signature import PKCS1_v1_5
+from Crypto.Signature import PKCS1_v1_5
 
 import CRXFile
 
@@ -40,7 +40,7 @@ with zipfile.ZipFile(zpayload, 'w', zipfile.ZIP_DEFLATED) as zipf:
 zipblob = zpayload.getvalue()
 
 crxpayload = iofactory()
-cf = CRXFile.CRXFile(crxpayload, mode='w')
+cf = CRXFile.CRXFile(crxpayload, mode='w', log=log.getChild('wcrx'))
 cf.setprivatekey(k)
 
 sha1sum = '\n'.join(["%s %s" % (fn, ss) for fn, ss in fs])
@@ -56,7 +56,8 @@ cf.write_payload()
 
 # REWIND THE TAPE WHIRR WHIRR WHIRR
 crxpayload.seek(0)
-rcf = CRXFile.CRXFile(crxpayload)
+rcf = CRXFile.CRXFile(crxpayload, log=log.getChild('rcrx'))
+rzip = zipfile.ZipFile(rcf)
 
 code.interact(local=locals())
 

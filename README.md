@@ -30,3 +30,13 @@ crx version 3 includes:
  - payload
 - C boolean showing presence of centrial directory inside payload (offset?)
 - blobs for previous
+
+Design requirements / thoughts:
+ - CRX files must be streamable after the header is read and cryptographically verified.
+  - The zip 'central directory' is re/co-located in the header to accomplish this
+  - the offsets in said header will be true to the file, not just true to the payload
+  - for backwards-compatible / naive zip implementations, the central directory can be kept in the payload 
+    (at end-of-file for a valid zip)
+ - Verification should be doable through a regular public key _or_ an x509 certificate, 
+    in order to tie into existing webs of trust
+ - Payloads other than zip (tar? rar? cpio?) might be nice someday
